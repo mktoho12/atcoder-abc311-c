@@ -29,12 +29,14 @@ const find = (nodes: Input, from = 0): Input => {
 export const findLoop = (nodes: number[]) => {
   const graph = read(nodes)
   const loop = find(graph)
-  const startValue = loop.find(n => n.visited).value
-  const startIndex = loop.findIndex(n => n.value === startValue)
+  const last = loop[loop.length - 1]
 
-  if (startValue === loop[loop.length - 1].value) {
+  if (last.value === 0) {
+    // 先頭に戻ってループ
     return write(loop)
   } else {
-    return write(loop.slice(startIndex, -1))
+    // 途中のどこかに戻ってループ
+    const loopStart = loop.findIndex(n => n.value === last.value)
+    return write(loop.slice(loopStart, -1))
   }
 }
