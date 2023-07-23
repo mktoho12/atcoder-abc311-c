@@ -1,37 +1,39 @@
 import * as fs from 'fs'
 
-type Node = number
-
-type Input = Node[]
-
-interface Footprints {
-  [key: number]: boolean
+interface Node {
+  value: number
+  next?: Node
+  nextIndex?: number
 }
+type NodeMap = Node[]
+type Footprints = Set<number>
 
-// 探索
-const find = (nodes: Input, from = 1, footprints: Footprints = {}): Input => {
-  const next = nodes[from - 1]
-  if (footprints[next]) {
-    return [next]
+// core
+const findLoop = (nums: number[]) => {
+  const nodes: NodeMap = []
+  nums.forEach((num, i) => {
+    nodes[i + 1] = { value: i + 1, nextIndex: num }
+  })
+
+  nodes.forEach((node, num, all) => {
+    node.next = all[node.nextIndex]
+  })
+
+  const footprints: Footprints = new Set()
+  const route = []
+  let current = nodes[1]
+  while (current && !footprints.has(current.value)) {
+    footprints.add(current.value)
+    route.push(current.value)
+    current = current.next
   }
 
-  return [next, ...find(nodes, next, { ...footprints, [next]: true })]
+  const last = footprints.has(current.value) ? current.value : 0
+
+  return last === 0 ? route : route.slice(route.findIndex(n => n === last))
 }
 
-const findLoop = (nodes: number[]) => {
-  const loop = find(nodes)
-  const last = loop[loop.length - 1]
-
-  if (last === 0) {
-    // 先頭に戻ってループ
-    return loop
-  } else {
-    // 途中のどこかに戻ってループ
-    const loopStart = loop.findIndex(n => n === last)
-    return loop.slice(loopStart, -1)
-  }
-}
-
+// input & output
 const parse = (inputs: string) =>
   inputs
     .split(/\n/)[1]
@@ -40,9 +42,10 @@ const parse = (inputs: string) =>
 
 const format = (nums: number[]) => `${nums.length}\n${nums.join(' ')}`
 
+// main
 const input = fs.readFileSync('/dev/stdin', 'utf8')
-const nodes = parse(input)
-const answer = findLoop(nodes)
+const nums = parse(input)
+const answer = findLoop(nums)
 const output = format(answer)
 
 console.log(output)
