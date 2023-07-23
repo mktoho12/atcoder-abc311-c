@@ -17,7 +17,7 @@ pnpm build
 
 実行する
 ```
-cat input/sample01.txt | pnpm start
-cat input/sample02.txt | pnpm start
-cat input/sample03.txt | pnpm start
+node dist/index.js < input/sample01.txt
+node dist/index.js < input/sample02.txt
+node dist/index.js < input/sample03.txt
 ```
