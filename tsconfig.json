@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022", "dom"],
+    "lib": ["ES2020", "dom"],
     "baseUrl": "src",
     "outDir": "dist"
   }
